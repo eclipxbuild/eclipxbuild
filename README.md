@@ -21,16 +21,17 @@ Open <http://localhost:3000>. The contact form validates the required fields and
 ```bash
 pnpm typecheck
 pnpm build
-pnpm start
 ```
+
+`pnpm build` creates a Next.js static export in `out/`. To serve those generated files locally, run `python3 -m http.server 8080 --directory out` after the build. For development and hot reload, use `pnpm dev`.
 
 `pnpm-workspace.yaml` contains the pnpm v11 lifecycle-script allowlist. Dependencies do not require arbitrary install-time scripts to build the project.
 
 ## Public URL, SEO, and custom domain
 
-No public production domain or hosting provider was supplied, so the project does not guess a canonical domain or publish itself. Before deployment, set `NEXT_PUBLIC_SITE_URL` to the final HTTPS origin, for example `https://www.example.in`, in the hosting provider’s build environment. Use the actual canonical domain, with no trailing slash. When set, the app creates absolute canonical and Open Graph URLs and fills in `sitemap.xml` and `robots.txt`; without it, those absolute-origin tags/documents are intentionally omitted rather than using an internal preview URL.
+No public production domain or hosting provider was supplied, so the project does not guess a canonical domain. Before deployment, set `NEXT_PUBLIC_SITE_URL` to the final HTTPS origin, for example `https://www.example.in`, in the hosting provider’s build environment. Use the actual canonical domain, with no trailing slash. When set, the app creates absolute canonical and Open Graph URLs and fills in `sitemap.xml` and `robots.txt`; without it, canonical/site-origin URLs are omitted, the sitemap has no URLs, and robots.txt has no sitemap line rather than using an internal preview URL.
 
-Deploy as a standard Next.js Node application to a Next.js-compatible host. Use Node 20.9+; set the build command to `pnpm install --frozen-lockfile && pnpm build` and the start command to `pnpm start` (or the provider’s supported Next.js runtime). Point the domain’s DNS records to the chosen host, enable HTTPS, set `NEXT_PUBLIC_SITE_URL` to the exact HTTPS origin, then rebuild/redeploy so the generated metadata and sitemap use that origin. Provider DNS instructions vary by registrar and hosting provider.
+This project is configured for a static Next.js export. The deployment build command is `pnpm install --frozen-lockfile && pnpm build`, and the output directory is `out`. There is no Node application server to start after upload. For a custom domain, connect the domain to the static host, configure DNS and HTTPS using that provider’s instructions, set `NEXT_PUBLIC_SITE_URL` to the exact HTTPS origin in its build environment, then rebuild and redeploy so canonical/Open Graph URLs, `sitemap.xml`, and `robots.txt` use the production domain.
 
 The current site uses Manus project storage for generated illustration assets. When exporting the source to another host, confirm those `/manus-storage/async-images/...` assets are available to the chosen host or copy the finished images into that host’s public asset directory and update the two image paths in `app/page.tsx` and `app/concepts/[slug]/page.tsx`.
 
