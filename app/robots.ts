@@ -1,0 +1,10 @@
+import type { MetadataRoute } from "next";
+
+export default function robots(): MetadataRoute.Robots {
+  const origin = process.env.NEXT_PUBLIC_SITE_URL;
+  const validOrigin = origin && /^https:\/\//i.test(origin) ? origin.replace(/\/$/, "") : undefined;
+  return {
+    rules: { userAgent: "*", allow: "/", disallow: "/api/" },
+    ...(validOrigin ? { sitemap: `${validOrigin}/sitemap.xml` } : {}),
+  };
+}
